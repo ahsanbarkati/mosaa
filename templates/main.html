@@ -1,0 +1,45 @@
+<html>
+  <head>
+
+<style>
+table, td, th {
+  border: 1px solid black;
+}
+
+th {
+  background-color: #728FCE;
+}
+
+table {
+  width: 60%;
+	text-align: center;
+  border-collapse: collapse;
+}
+</style>
+  </head>
+
+  <body>
+		<form  method="POST">
+      	{{ form.csrf_token }}
+      	{{ form.college }}
+
+		<input type="submit" value="Submit")></input>
+		</form>
+		<table border=1>
+		<tr>
+			<th>Category</th>
+			<th>Opening</th>
+			<th>Closing</th>
+			<th>Total</th>
+		</tr>
+		{% for cat in cats %}
+			<tr>
+				<td>{{cat}}</td>
+				<td>{{oc[cat]["opening"]}}</td>
+				<td>{{oc[cat]["closing"]}}</td>
+				<td>{{oc[cat]["total"]}}</td>
+			<tr>
+		{% endfor %}
+		</table>
+  </body>
+</html>
