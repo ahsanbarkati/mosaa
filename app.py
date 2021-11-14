@@ -13,6 +13,7 @@ colleges = np.sort(np.array(colleges))
 
 colleges2 = data2['Institute'].unique()
 colleges2 = np.sort(np.array(colleges2))
+colleges2 = [c.replace('\n',"") for c in colleges2]
 
 def get_open_close(d):
   if len(d) == 0:
@@ -54,8 +55,7 @@ for college in colleges:
 op_data2 = {}
 for college in colleges2:
   college_data = data2[data2['Institute'] == college]
-  info = open_close2(college_data)
-  op_data2[college] = info
+  op_data2[college] = open_close2(college_data)
 
 def get_oc(col):
   return op_data[col]
@@ -63,16 +63,25 @@ def get_oc(col):
 def get_oc2(col):
   return op_data2[col]
 
+cols2 = [k for k in op_data2]
+cols2 = np.sort(np.array(cols2))
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'any secret string'
 
 class Form(FlaskForm):
 	college = SelectField("college", choices = colleges)
-	roundno = SelectField("roundno", choices = [1, 2])
+
+
+class Form2(FlaskForm):
+	college = SelectField("college", choices = cols2)
 
 @app.route('/', methods=["GET", "POST"])
-# ‘/’ URL is bound with hello_world() function.
-def hello_world():
+def fun():
+	return render_template("./home.html")
+
+@app.route('/round1', methods=["GET", "POST"])
+def round1():
 	form = Form()
 
 	oc = {}
@@ -80,17 +89,24 @@ def hello_world():
 	if request.method == "POST":
 		print("a post method", form.data)
 		col = form.data["college"]
-		rnd = form.data["roundno"]
-		if rnd == "1":
-			oc = get_oc(col)
-		elif rnd == "2":
-			oc = get_oc2(col)
+		oc = get_oc(col)
 		cats = [c for c in oc.keys()]
 
-
-	
 	return render_template("./main.html", form=form, oc=oc,cats=cats)
 
+
+@app.route('/round2', methods=["GET", "POST"])
+def round2():
+	form2 = Form2()
+	oc = {}
+	cats = []
+	if request.method == "POST":
+		print("a post method", form2.data)
+		col = form2.data["college"]
+		oc = get_oc2(col)
+		cats = [c for c in oc.keys()]
+
+	return render_template("./main.html", form=form2, oc=oc,cats=cats)
 
 # main driver function
 if __name__ == '__main__':
