@@ -15,6 +15,10 @@ table {
 	text-align: center;
   border-collapse: collapse;
 }
+
+form {
+	width: 60%;
+}
 </style>
   </head>
 
@@ -25,8 +29,12 @@ table {
 	<center>	
 		<form  method="POST">
       	{{ form.csrf_token }}
-      	{{ form.college }}
-
+      	<Label> Institute: </Label>{{ form.college }}
+				<br>
+				<br>
+      	<Label> Round: </Label>{{ form.roundno }}
+				<br>
+				<br>
 		<input type="submit" value="Submit")></input>
 		</form>
 		<table border=1>
