@@ -23,34 +23,43 @@ form {
   </head>
 
   <body>
-	<center> <h1> MOSAA - Medical JOSAA </h1></center>
-	<center><h3> When medico needs an engineer | created by: Ahsan Barkati</h3></center>
+	<center> <h1> MOSAA: The JOSAA alternative for Medical</h1></center>
+	<center><h3> When medico needs an engineer :) | Created by:
+			<a href="https://linkedin.com/in/ahsanbarkati">Ahsan Barkati</a></h3></center>
 	<br><br>
-	<center>	
+	<center>
 		<form  method="POST">
       	{{ form.csrf_token }}
       	<Label> Institute: </Label>{{ form.college }}
 				<br>
 				<br>
-				<br>
 		<input type="submit" value="Submit")></input>
 		</form>
-		<table border=1>
-		<tr>
-			<th>Category</th>
-			<th>Opening</th>
-			<th>Closing</th>
-			<th>Total</th>
-		</tr>
-		{% for cat in cats %}
-			<tr>
-				<td>{{cat}}</td>
-				<td>{{oc[cat]["opening"]}}</td>
-				<td>{{oc[cat]["closing"]}}</td>
-				<td>{{oc[cat]["total"]}}</td>
-			<tr>
-		{% endfor %}
-		</table>
+
+		{% if college %}
+			<h2> {{college}}</h2>
+			{% if cats %}
+				<table border=1>
+				<tr>
+					<th>Category</th>
+					<th>Opening</th>
+					<th>Closing</th>
+					<th>Total</th>
+				</tr>
+				{% for cat in cats %}
+					<tr>
+						<td>{{cat}}</td>
+						<td>{{oc[cat]["opening"]}}</td>
+						<td>{{oc[cat]["closing"]}}</td>
+						<td>{{oc[cat]["total"]}}</td>
+					<tr>
+				{% endfor %}
+				</table>
+			{% else %}
+					<h3>No seats were alloted in second round for this college</h3>
+			{% endif %}
+		{% endif %}
+		<h3><a href="/">Back to home</a></h3>
 	</center>
   </body>
 </html>

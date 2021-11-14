@@ -7,6 +7,7 @@ import numpy as np
 data = pd.read_csv('./data.csv')
 data2 = pd.read_csv('./data2.csv')
 data2 = data2[data2['Admitted Round'] == 2]
+data2['Category'] = data2[['Allotted Category', 'Allotted ph']].apply(lambda x: '-'.join(x), axis=1)
 
 colleges = data['Allotted Institute'].unique()
 colleges = np.sort(np.array(colleges))
@@ -35,9 +36,9 @@ def open_close(cd):
 
 def open_close2(cd):
   info = {}
-  categories = cd['Allotted Category'].unique()
+  categories = cd['Category'].unique()
   for category in categories:
-    cat_data = cd[cd['Allotted Category'] == category]
+    cat_data = cd[cd['Category'] == category]
     o, c = get_open_close(cat_data['AIR'].values)
     info[category] = {
         "total": len(cat_data),
@@ -72,7 +73,6 @@ app.config['SECRET_KEY'] = 'any secret string'
 class Form(FlaskForm):
 	college = SelectField("college", choices = colleges)
 
-
 class Form2(FlaskForm):
 	college = SelectField("college", choices = cols2)
 
@@ -82,17 +82,16 @@ def fun():
 
 @app.route('/round1', methods=["GET", "POST"])
 def round1():
-	form = Form()
-
-	oc = {}
-	cats = []
-	if request.method == "POST":
-		print("a post method", form.data)
-		col = form.data["college"]
-		oc = get_oc(col)
-		cats = [c for c in oc.keys()]
-
-	return render_template("./main.html", form=form, oc=oc,cats=cats)
+    form = Form()
+    oc = {}
+    cats = []
+    col = ""
+    if request.method == "POST":
+        print("a post method", form.data)
+        col = form.data["college"]
+        oc = get_oc(col)
+        cats = [c for c in oc.keys()]
+    return render_template("./main.html", form=form, oc=oc, cats=cats, college=col)
 
 
 @app.route('/round2', methods=["GET", "POST"])
@@ -100,13 +99,14 @@ def round2():
 	form2 = Form2()
 	oc = {}
 	cats = []
+	col = ""
 	if request.method == "POST":
 		print("a post method", form2.data)
 		col = form2.data["college"]
 		oc = get_oc2(col)
 		cats = [c for c in oc.keys()]
 
-	return render_template("./main.html", form=form2, oc=oc,cats=cats)
+	return render_template("./main.html", form=form2, oc=oc,cats=cats, college=col)
 
 # main driver function
 if __name__ == '__main__':
