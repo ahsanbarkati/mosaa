@@ -47,6 +47,7 @@ class Form(FlaskForm):
 def hello_world():
 	form = Form()
 
+	oc = {}
 	if request.method == "POST":
 		print("a post method", form.data)
 		oc = get_oc(form.data["college"])
