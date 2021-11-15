@@ -18,7 +18,7 @@ colleges2 = np.sort(np.array(colleges2))
 colleges2 = [c.replace('\n',"") for c in colleges2]
 
 cf = open("count.file", "w+")
-cf.write("40")
+cf.write("864")
 cf.close()
 
 
