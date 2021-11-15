@@ -16,6 +16,8 @@ colleges2 = data2['Institute'].unique()
 colleges2 = np.sort(np.array(colleges2))
 colleges2 = [c.replace('\n',"") for c in colleges2]
 
+count = 1
+
 def get_open_close(d):
   if len(d) == 0:
     return "NA","NA"
@@ -78,10 +80,14 @@ class Form2(FlaskForm):
 
 @app.route('/', methods=["GET", "POST"])
 def fun():
-	return render_template("./home.html")
+    global count
+    count+=1
+    return render_template("./home.html", count=count)
 
 @app.route('/round1', methods=["GET", "POST"])
 def round1():
+    global count
+    count+=1
     form = Form()
     oc = {}
     cats = []
@@ -96,17 +102,18 @@ def round1():
 
 @app.route('/round2', methods=["GET", "POST"])
 def round2():
-	form2 = Form2()
-	oc = {}
-	cats = []
-	col = ""
-	if request.method == "POST":
-		print("a post method", form2.data)
-		col = form2.data["college"]
-		oc = get_oc2(col)
-		cats = [c for c in oc.keys()]
-
-	return render_template("./main.html", form=form2, oc=oc,cats=cats, college=col)
+    global count
+    count+=1
+    form2 = Form2()
+    oc = {}
+    cats = []
+    col = ""
+    if request.method == "POST":
+        print("a post method", form2.data)
+        col = form2.data["college"]
+        oc = get_oc2(col)
+        cats = [c for c in oc.keys()]
+    return render_template("./main.html", form=form2, oc=oc,cats=cats, college=col)
 
 # main driver function
 if __name__ == '__main__':
