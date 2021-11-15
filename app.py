@@ -4,6 +4,7 @@ from flask_wtf import FlaskForm
 from wtforms import SelectField 
 import numpy as np
 
+
 data = pd.read_csv('./data.csv')
 data2 = pd.read_csv('./data2.csv')
 data2 = data2[data2['Admitted Round'] == 2]
@@ -16,7 +17,23 @@ colleges2 = data2['Institute'].unique()
 colleges2 = np.sort(np.array(colleges2))
 colleges2 = [c.replace('\n',"") for c in colleges2]
 
-count = 1
+cf = open("count.file", "w+")
+cf.write("40")
+cf.close()
+
+
+def count_read():
+    cf = open("count.file", "r")
+    cur = int(cf.read())
+    cf.close()
+    return cur
+
+def increment():
+    cur = count_read()
+    cf = open("count.file", "w")
+    cf.write(str(cur + 1))
+    cf.close()
+
 
 def get_open_close(d):
   if len(d) == 0:
@@ -80,14 +97,12 @@ class Form2(FlaskForm):
 
 @app.route('/', methods=["GET", "POST"])
 def fun():
-    global count
-    count+=1
-    return render_template("./home.html", count=count)
+    increment()
+    return render_template("./home.html", count=count_read())
 
 @app.route('/round1', methods=["GET", "POST"])
 def round1():
-    global count
-    count+=1
+    increment()
     form = Form()
     oc = {}
     cats = []
@@ -102,8 +117,7 @@ def round1():
 
 @app.route('/round2', methods=["GET", "POST"])
 def round2():
-    global count
-    count+=1
+    increment()
     form2 = Form2()
     oc = {}
     cats = []
