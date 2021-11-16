@@ -3,7 +3,7 @@ import pandas as pd
 from flask_wtf import FlaskForm
 from wtforms import SelectField 
 import numpy as np
-
+from multiprocessing import Value
 
 data = pd.read_csv('./data.csv')
 data2 = pd.read_csv('./data2.csv')
@@ -17,23 +17,21 @@ colleges2 = data2['Institute'].unique()
 colleges2 = np.sort(np.array(colleges2))
 colleges2 = [c.replace('\n',"") for c in colleges2]
 
-cf = open("count.file", "w+")
-cf.write("864")
-cf.close()
-
+counter = Value('i', 1200)
 
 def count_read():
-    cf = open("count.file", "r")
-    cur = int(cf.read())
-    cf.close()
+    cur = 0
+    with counter.get_lock():
+        cur = counter.value
     return cur
 
 def increment():
-    cur = count_read()
-    cf = open("count.file", "w")
-    cf.write(str(cur + 1))
-    cf.close()
-
+    with counter.get_lock():
+        counter.value += 1
+        if counter.value % 100 == 0:
+            cf = open("count.file")
+            cf.write(str(counter.value))
+            cf.close()
 
 def get_open_close(d):
   if len(d) == 0:
